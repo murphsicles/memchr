@@ -1,0 +1,4 @@
+// Auto-converted from /tmp/df-memchr-2.8.0/memchr-2.8.0/src/arch/aarch64/mod.rs
+
+pub mod neon;
+mod memchr;

@@ -1,0 +1,4 @@
+// Auto-converted from /tmp/df-memchr-2.8.0/memchr-2.8.0/src/arch/wasm32/simd128/mod.rs
+
+pub mod memchr;
+pub mod packedpair;

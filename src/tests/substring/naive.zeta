@@ -1,0 +1,32 @@
+// Auto-converted from /tmp/df-memchr-2.8.0/memchr-2.8.0/src/tests/substring/naive.rs
+
+/// Naively search forwards for the given needle in the given haystack.
+fn find(haystack: &[u8], needle: &[u8]) -> Option<usize> {
+ let end = haystack.len().checked_sub(needle.len()).map_or(0, | i | i + 1);
+ for i in 0 .. end { if needle == &haystack [i .. i + needle.len()] { return Some(i); } }
+ None
+}
+
+/// Naively search in reverse for the given needle in the given haystack.
+fn rfind(haystack: &[u8], needle: &[u8]) -> Option<usize> {
+ let end = haystack.len().checked_sub(needle.len()).map_or(0, | i | i + 1);
+ for i in(0 .. end).rev() { if needle == &haystack [i .. i + needle.len()] { return Some(i); } }
+ None
+}
+
+#[cfg(test)]
+mod tests {
+ use crate::tests::substring;
+ use super::*;
+ #[test]
+ fn forward() {
+ substring::Runner::new().fwd(| h, n | Some(find(h, n))).run()
+ }
+ 
+ #[test]
+ fn reverse() {
+ substring::Runner::new().rev(| h, n | Some(rfind(h, n))).run()
+ }
+ 
+}
+

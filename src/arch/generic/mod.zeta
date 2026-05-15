@@ -1,0 +1,4 @@
+// Auto-converted from /tmp/df-memchr-2.8.0/memchr-2.8.0/src/arch/generic/mod.rs
+
+mod memchr;
+mod packedpair;

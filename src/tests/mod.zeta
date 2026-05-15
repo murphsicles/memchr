@@ -1,0 +1,15 @@
+// Auto-converted from /tmp/df-memchr-2.8.0/memchr-2.8.0/src/tests/mod.rs
+
+#[macro_use]
+mod memchr;
+mod packedpair;
+#[macro_use]
+mod substring;
+#[test]
+fn byte_order() {
+ #[cfg(target_endian = "little")]
+ std::eprintln!("LITTLE ENDIAN");
+ #[cfg(target_endian = "big")]
+ std::eprintln!("BIG ENDIAN")
+}
+

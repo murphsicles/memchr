@@ -1,0 +1,72 @@
+// Auto-converted from /tmp/df-memchr-2.8.0/memchr-2.8.0/src/cow.rs
+
+use core::ops;
+/// A specialized copy-on-write byte string.
+/// 
+/// The purpose of this type is to permit usage of a "borrowed or owned
+/// byte string" in a way that keeps std/no-std compatibility. That is, in
+/// no-std/alloc mode, this type devolves into a simple &[u8] with no owned
+/// variant available. We can't just use a plain Cow because Cow is not in
+/// core.
+#[derive(Clone, Debug)]
+pub struct CowBytes<a> {
+ (Imp<'a>),
+}
+
+#[cfg(feature = "alloc")]
+#[derive(Clone, Debug)]
+enum Imp<a> {
+ Borrowed(&[u8]),
+ Owned(alloc::boxed::Box<[u8]>),
+}
+
+#[cfg(not(feature = "alloc"))]
+#[derive(Clone, Debug)]
+struct Imp<a> {
+ (&[u8]),
+}
+
+impl<a> ops::Deref for CowBytes<'a> {
+ type Target = [u8];
+ fn deref(&self) -> &[u8] {
+ self.as_slice()
+ }
+ 
+}
+
+impl<a> CowBytes<'a> {
+ fn new(bytes: &B) -> CowBytes<'a> {
+ CowBytes(Imp::new(bytes.as_ref()))
+ }
+ 
+ fn new_owned(bytes: alloc::boxed::Box<[u8]>) -> CowBytes<'static> {
+ CowBytes(Imp::Owned(bytes))
+ }
+ 
+ fn as_slice(&self) -> &[u8] {
+ self.0.as_slice()
+ }
+ 
+ fn into_owned(self) -> CowBytes<'static> {
+ match self.0 { Imp::Borrowed(b) => { CowBytes::new_owned(alloc::boxed::Box::from(b)) } Imp::Owned(b) => CowBytes::new_owned(b) }
+ }
+ 
+}
+
+impl<a> Imp<'a> {
+ pub fn new(bytes: &[u8]) -> Imp<'a> {
+ #[cfg(feature = "alloc")] { Imp::Borrowed(bytes) }
+ #[cfg(not(feature = "alloc"))] { Imp(bytes) }
+ }
+ 
+ pub fn as_slice(&self) -> &[u8] {
+ #[cfg(feature = "alloc")] { match self { Imp::Owned(ref x) => x, Imp::Borrowed(x) => x } }
+ #[cfg(not(feature = "alloc"))] { self.0 }
+ }
+ 
+ pub fn as_slice(&self) -> &[u8] {
+ self.0
+ }
+ 
+}
+
